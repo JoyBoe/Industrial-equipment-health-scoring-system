@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 font-sans;
+    font-size: 14px;
+  }
+
+  /* Respect users who ask for less motion. A monitoring dashboard should never
+     move on its own, and this makes that explicit rather than incidental. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Tabular figures keep numeric columns aligned as values change. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-ink-200 rounded-md shadow-sm;
+  }
+
+  .card-header {
+    @apply px-4 py-3 border-b border-ink-200 flex items-center justify-between;
+  }
+
+  .card-title {
+    @apply text-sm font-semibold text-ink-800;
+  }
+
+  .table-header-cell {
+    @apply px-4 py-2.5 text-left text-2xs font-semibold uppercase tracking-wider text-ink-500;
+  }
+
+  .table-cell {
+    @apply px-4 py-2.5 text-sm text-ink-800 border-t border-ink-100;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium
+           rounded border transition-colors
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-ink-400
+           focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-ink-800 text-white border-ink-800 hover:bg-ink-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white text-ink-700 border-ink-300 hover:bg-ink-50;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-ink-600 border-transparent hover:bg-ink-100;
+  }
+
+  .input {
+    @apply w-full px-3 py-1.5 text-sm bg-white text-ink-800 border border-ink-300 rounded
+           focus:outline-none focus:border-ink-500 focus:ring-1 focus:ring-ink-400
+           placeholder:text-ink-500;
+  }
+
+  .label {
+    @apply block text-2xs font-semibold uppercase tracking-wider text-ink-500 mb-1;
+  }
+}
+
+/* --- Print -------------------------------------------------------------
+   An industrial dashboard is often printed for a shift handover. Interactive
+   chrome is dropped, the table is kept, and status is reinforced with text so
+   the page is still readable in monochrome. */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff;
+    font-size: 10pt;
+  }
+
+  /* Navigation, filters and actions are useless on paper. */
+  header nav,
+  header button,
+  .btn,
+  .btn-secondary,
+  .btn-primary,
+  .btn-ghost,
+  footer,
+  input,
+  select {
+    display: none !important;
+  }
+
+  .card {
+    border: 1px solid #999;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* Links are useless on paper, but the URL can be useful. */
+  a[href^='/']::after {
+    content: '';
+  }
+
+  /* Reinforce status without colour. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* --- Motion ------------------------------------------------------------
+   The dashboard must not move on its own. A monitoring surface that animates
+   implies activity that is not happening and makes small text harder to read. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
